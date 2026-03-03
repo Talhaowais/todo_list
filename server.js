@@ -38,7 +38,6 @@ app.post("/api/todos", authMiddleware, async (req, res) => {
 
     const todo = await Todo.create({
       task,
-      userId: req.userId,          // 🔥 Old ownership logic
       createdBy: req.userId,       // 🔥 New tracking
       updatedBy: req.userId,       // 🔥 Initial update same as creator
       assignedTo: assignedTo || null
@@ -62,7 +61,7 @@ app.get("/api/todos", authMiddleware, async (req, res) => {
     const todos = await Todo.findAll({
       where: {
         [Op.or]: [
-          { userId: req.userId },       // Todos created by the user
+          { createdBy: req.userId },       // Todos created by the user
           { assignedTo: req.userId }    // Todos assigned to the user
         ]
       },
@@ -103,7 +102,7 @@ app.get("/api/todos/:id", authMiddleware, async (req, res) => {
       where: {
         id: req.params.id,
         [Op.or]: [
-          { userId: req.userId },
+          { createdBy: req.userId },
           { assignedTo: req.userId }
         ]
       }
@@ -137,7 +136,6 @@ app.put("/api/todos/:id", authMiddleware, async (req, res) => {
       {
         where: {
           id: req.params.id,
-          userId: req.userId     // 🔥 Only creator can update
         }
       }
     );
@@ -162,7 +160,6 @@ app.delete("/api/todos/:id", authMiddleware, async (req, res) => {
     const deleted = await Todo.destroy({
       where: {
         id: req.params.id,
-        userId: req.userId
       }
     });
 

@@ -116,7 +116,7 @@ function TodoPage() {
         {/* ✅ Updated Welcome Section */}
         <div style={styles.welcomeContainer}>
           <img
-            src={user?.profilePic || "https://via.placeholder.com/80"}
+            src={user?.profilePic}
             alt="Profile"
             style={styles.profileImage}
           />
